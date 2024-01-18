@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,18 +44,19 @@ public class WebSecurityConfig {
     @Autowired
     private UserService userService;
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
          http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/registration/*","/api/v1/login").permitAll()
-                        .requestMatchers("/api/v1/login/*").permitAll()
+                        .requestMatchers("/api/v1/login/*","/swagger-ui/*","/api-docs/*").permitAll()
 //                        .requestMatchers("/api/v1/customer/*")
 //                        .hasAnyAuthority(Role.CUSTOMER.name())
 //                        .requestMatchers("/api/v1/merchant/*")
 //                        .hasAnyAuthority(Role.MERCHANT.name())
 //                        .requestMatchers("/api/v1/admin/*")
 //                        .hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers("/api/v1/admin/test").authenticated()
+                        .requestMatchers("/api/v1/admin/*").authenticated()
                         .requestMatchers("/api/v1/merchant/*").authenticated()
                        .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

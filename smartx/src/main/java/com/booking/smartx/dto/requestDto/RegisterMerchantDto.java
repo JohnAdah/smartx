@@ -1,10 +1,13 @@
 package com.booking.smartx.dto.requestDto;
 
 import com.booking.smartx.utils.Utils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
 public class RegisterMerchantDto {
     private String businessName;
     private String email;
@@ -14,6 +17,7 @@ public class RegisterMerchantDto {
     private String address;
     private String businessType;
     private int numberOfEmployees;
+    private String role;
     private int token;
 
     public String getBusinessName() {
@@ -84,6 +88,14 @@ public class RegisterMerchantDto {
         }
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public int getToken() {
         return token;
     }
@@ -98,7 +110,6 @@ public class RegisterMerchantDto {
                 "businessName='" + businessName + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", password='" + password + '\'' +
                 ", postCode='" + postCode + '\'' +
                 ", address='" + address + '\'' +
                 ", businessType='" + businessType + '\'' +

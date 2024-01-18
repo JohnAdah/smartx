@@ -19,7 +19,7 @@ public class Utils {
         return number;
     }
 
-    public static int emailVerificationToken(){
+    public static int emailVerificationOtp(){
         return random.nextInt(1000,9999);
     }
 

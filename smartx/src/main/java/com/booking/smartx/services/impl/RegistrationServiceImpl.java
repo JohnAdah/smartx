@@ -35,9 +35,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Value("${otp.notification.template}")
     private String otpTemplate;
-
     @Value("${successful.registration.notification.template}")
     private String successfulRegistrationTemplate;
+    @Value("${reset.password.template}")
+    private String restPasswordTemplate;
     private HashMap<String, String> data;
 
 
@@ -55,11 +56,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         if(!Objects.isNull(checkExistingUser)){
             return new ResponseEntity<>(Constants.USER_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
         }
-        registerObj.setToken(Utils.emailVerificationToken());
+        registerObj.setToken(Utils.emailVerificationOtp());
         tempInMemoryDb.saveData(registerObj.getEmail(),registerObj);
         //implementation to send email to user with verification token
         //TODO: set token validation period and include field in registerMerchantDto
-        sendToken(registerObj);
+        sendOTP(registerObj,Constants.EMAIL_VERIFICATION_SUBJECT,otpTemplate);
         return new ResponseEntity<>("token successfully sent",HttpStatus.OK);
     }
 
@@ -77,7 +78,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if(!(tempRegData.getToken() == Integer.parseInt(token))){
             return new ResponseEntity<>(Constants.INVALID_TOKEN_PROVIDED, HttpStatus.FORBIDDEN);
         }
-        //TODO: Validate token expiration period
+        //TODO: Validate OTP expiration period
         //Save user into DB
         User registration = RegistrationMapper.merchantRegistrationMapper(tempRegData);
         registration.setPassword(passwordEncoder.encode(registration.getPassword()));
@@ -114,18 +115,18 @@ public class RegistrationServiceImpl implements RegistrationService {
         if(Objects.isNull(tempRegData)){
             return new ResponseEntity<>(Constants.USER_NOT_FOUND,HttpStatus.BAD_REQUEST);
         }
-        tempRegData.setToken(Utils.emailVerificationToken());
-        sendToken(tempRegData);
+        tempRegData.setToken(Utils.emailVerificationOtp());
+        sendOTP(tempRegData,Constants.EMAIL_VERIFICATION_SUBJECT,otpTemplate);
         return new ResponseEntity<>("token successfully sent",HttpStatus.OK);
     }
 
-    private void sendToken (RegisterMerchantDto tempRegData){
+    public void sendOTP (RegisterMerchantDto tempRegData, String subject, String template){
         data = new HashMap<>();
         data.put("token", String.valueOf(tempRegData.getToken()));
-        String emailBody = emailServiceImpl.prepareEmailTemplate(otpTemplate, data);
+        String emailBody = emailServiceImpl.prepareEmailTemplate(template, data);
         emailService.sendEmail(tempRegData.getEmail(), emailBody,
-                Constants.EMAIL_VERIFICATION_SUBJECT);
-        log.info("Token sent to user email: {}",tempRegData.getEmail());
+                subject);
+        log.info("OTP sent to user email: {}",tempRegData.getEmail());
     }
 
 

@@ -33,4 +33,16 @@ public class RegistrationMapper {
                 .role(dto.getRole())
                 .build();
     }
+
+    public static RegisterMerchantDto registrationMapper(User dto){
+        return RegisterMerchantDto.builder().businessName(dto.getBusinessName())
+                .email(dto.getEmail())
+                .phoneNumber(dto.getPhoneNumber())
+                .address(dto.getAddress())
+                .postCode(dto.getPostCode())
+                .businessType(dto.getBusinessType())
+                .numberOfEmployees(Utils.validateIntegerInput(dto.getNumberOfEmployees()))
+                .role(dto.getRole())
+                .build();
+    }
 }
